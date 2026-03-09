@@ -26,3 +26,7 @@ You can launch this project simply by opening `index.html` in any modern web bro
 
 ### To Connect to a Real Backend:
 Refer to the commented-out section at the bottom of `script.js` titled `--- HOW TO CONNECT TRUE BACKEND ---` for an example of how to link this frontend to a real WebSocket streaming from the ESP32.
+
+<a href="https://ayushman-pyne.github.io/Aura-Pal/" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: transform 0.2s, box-shadow 0.2s;">
+    Go to Website →
+  </a>
