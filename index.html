@@ -24,111 +24,119 @@
     </div>
     
     <div class="container">
+        <!-- Subtle Branding -->
         <header class="header">
             <div class="logo">
-                <i class="fa-solid fa-robot"></i> Aura-Pal
-            </div>
-            <div class="status">
-                <span class="pulse"></span> Online
+                Aura-Pal
             </div>
         </header>
 
-        <main class="dashboard">
-            <div class="left-column">
-                <!-- Camera Feed Section -->
-                <section class="camera-section glass-panel">
-                    <div class="panel-header">
-                        <h2><i class="fa-solid fa-camera"></i> Vision Feed</h2>
-                        <span class="badge" id="sourceBadge">ESP32 Stream</span>
-                    </div>
-                    <div class="video-container">
-                        <!-- Replace src with the actual ESP32/OpenCV stream URL once deployed -->
-                        <div class="video-placeholder" id="videoPlaceholder">
-                            <i class="fa-solid fa-video-slash"></i>
-                            <p id="placeholderText">Waiting for ESP32 OpenCV Feed...</p>
-                        </div>
-                        <!-- Sample src image for mock presentation, and webcam output -->
-                        <img id="videoStream" src="" alt="Live Video Feed" style="display: none;">
-                        <video id="webcamStream" autoplay playsinline style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
-                        
-                        <!-- Decorative scanner line indicating processing -->
-                        <div class="scanner-line"></div>
-                    </div>
-                    <p class="feed-instruction" id="feedInstruction">
-                        <i class="fa-solid fa-circle-info"></i> Point your ESP32 Camera towards a face to analyze emotion (FER2013).
-                    </p>
-                </section>
+        <!-- Emotion Advice/Quote Box (Top Right) -->
+        <div class="quote-area">
+            <div class="quote-box glass-panel">
+                <i class="fa-solid fa-quote-left quote-icon"></i>
+                <p id="emotionQuote">"Waiting to see your beautiful smile..."</p>
+            </div>
+        </div>
 
-                <!-- Interactive Controls Section -->
-                <section class="controls-section glass-panel">
-                    <div class="panel-header">
-                        <h2><i class="fa-solid fa-sliders"></i> Interactive Controls</h2>
-                        <span class="badge">Standalone</span>
+        <!-- Big Minimal Reactive Face -->
+        <div class="central-face-container">
+            <div class="reactive-face face-neutral" id="bigFace">
+                <div class="eyes">
+                    <div class="eye left-eye"></div>
+                    <div class="eye right-eye"></div>
+                </div>
+                <div class="mouth"></div>
+                
+                <!-- Emotion Decorations -->
+                <div class="decorations">
+                    <div class="tear left-tear"></div>
+                    <div class="tear right-tear"></div>
+                    <div class="fume left-fume"></div>
+                    <div class="fume right-fume"></div>
+                    <div class="sweat"></div>
+                </div>
+            </div>
+            
+            <div class="emotion-label-container" id="currentEmotion">
+                <h3 id="emotionText">Neutral</h3>
+                <p>Confidence: <span id="emotionConfidence">0.0</span>%</p>
+            </div>
+        </div>
+
+        <!-- Camera Area (Bottom Left) -->
+        <div class="camera-area">
+            <section class="camera-section glass-panel">
+                <div class="video-container">
+                    <div class="video-placeholder" id="videoPlaceholder">
+                        <i class="fa-solid fa-video-slash"></i>
+                        <p id="placeholderText">ESP32 Feed...</p>
                     </div>
-                    <div class="control-groups">
-                        <div class="control-group">
-                            <h3><i class="fa-solid fa-satellite-dish"></i> Input Source</h3>
-                            <div class="button-row">
-                                <button class="btn active" id="btn-esp32"><i class="fa-solid fa-microchip"></i> ESP32 MOCK</button>
-                                <button class="btn" id="btn-webcam"><i class="fa-solid fa-video"></i> WEBCAM</button>
-                                <label class="btn btn-label" for="image-upload" id="btn-image"><i class="fa-solid fa-image"></i> UPLOAD
-                                    <input type="file" id="image-upload" accept="image/*" style="display: none;">
-                                </label>
-                            </div>
+                    <!-- Sample src image for mock presentation, and webcam output -->
+                    <img id="videoStream" src="" alt="Live Video Feed" style="display: none;">
+                    <video id="webcamStream" autoplay playsinline style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
+                    
+                    <!-- Decorative scanner line indicating processing -->
+                    <div class="scanner-line"></div>
+                </div>
+                <div class="controls-overlay">
+                    <button class="btn active" id="btn-esp32" title="ESP32"><i class="fa-solid fa-microchip"></i></button>
+                    <button class="btn" id="btn-webcam" title="Webcam"><i class="fa-solid fa-video"></i></button>
+                    <label class="btn btn-label" for="image-upload" id="btn-image" title="Upload">
+                        <i class="fa-solid fa-image"></i>
+                        <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                    </label>
+                </div>
+            </section>
+        </div>
+
+        <!-- Emotion Actions / Controls (Bottom Rightish / Testing) -->
+        <div class="manual-triggers-area">
+             <div class="button-row emotions-row">
+                 <button class="btn-emo" data-emo="Happy">Happy</button>
+                 <button class="btn-emo" data-emo="Sad">Sad</button>
+                 <button class="btn-emo" data-emo="Angry">Angry</button>
+                 <button class="btn-emo" data-emo="Surprise">Surprise</button>
+                 <button class="btn-emo" data-emo="Neutral">Neutral</button>
+             </div>
+        </div>
+
+        <!-- Emotion Stats (Right Area - Hover Reveal) -->
+        <div class="stats-area-wrapper">
+            <div class="stats-trigger">
+                <i class="fa-solid fa-chart-simple"></i>
+                <span>Stats</span>
+            </div>
+            <div class="stats-area">
+                <section class="emotion-section glass-panel">
+                    <div class="panel-header">
+                        <h2>Stats</h2>
+                    </div>
+                    <div class="emotion-stats">
+                        <div class="stat-row">
+                            <span>Happy</span>
+                            <div class="progress-bar"><div class="progress fill-happy" id="bar-happy" style="width: 0%"></div></div>
                         </div>
-                        <div class="control-group">
-                            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Manual Emotion Trigger</h3>
-                            <div class="button-row emotions-row">
-                                <button class="btn-emo" data-emo="Happy">😁 Happy</button>
-                                <button class="btn-emo" data-emo="Sad">😢 Sad</button>
-                                <button class="btn-emo" data-emo="Angry">😠 Angry</button>
-                                <button class="btn-emo" data-emo="Surprise">😲 Surprise</button>
-                                <button class="btn-emo" data-emo="Neutral">😐 Neutral</button>
-                            </div>
+                        <div class="stat-row">
+                            <span>Sad</span>
+                            <div class="progress-bar"><div class="progress fill-sad" id="bar-sad" style="width: 0%"></div></div>
+                        </div>
+                        <div class="stat-row">
+                            <span>Angry</span>
+                            <div class="progress-bar"><div class="progress fill-angry" id="bar-angry" style="width: 0%"></div></div>
+                        </div>
+                        <div class="stat-row">
+                            <span>Surprise</span>
+                            <div class="progress-bar"><div class="progress fill-surprise" id="bar-surprise" style="width: 0%"></div></div>
+                        </div>
+                        <div class="stat-row">
+                            <span>Neutral</span>
+                            <div class="progress-bar"><div class="progress fill-neutral" id="bar-neutral" style="width: 0%"></div></div>
                         </div>
                     </div>
                 </section>
             </div>
-
-            <!-- Emotion Dashboard Section -->
-            <section class="emotion-section glass-panel">
-                <div class="panel-header">
-                    <h2><i class="fa-solid fa-heart"></i> Emotion Analysis</h2>
-                    <span class="badge">FER2013</span>
-                </div>
-                
-                <div class="current-emotion" id="currentEmotion">
-                    <div class="emotion-icon" id="emotionIcon">
-                        <i class="fa-regular fa-face-smile"></i>
-                    </div>
-                    <h3 id="emotionText">Happy</h3>
-                    <p>Confidence: <span id="emotionConfidence">85</span>%</p>
-                </div>
-
-                <div class="emotion-stats">
-                    <div class="stat-row">
-                        <span>Happy</span>
-                        <div class="progress-bar"><div class="progress fill-happy" id="bar-happy" style="width: 85%"></div></div>
-                    </div>
-                    <div class="stat-row">
-                        <span>Sad</span>
-                        <div class="progress-bar"><div class="progress fill-sad" id="bar-sad" style="width: 5%"></div></div>
-                    </div>
-                    <div class="stat-row">
-                        <span>Angry</span>
-                        <div class="progress-bar"><div class="progress fill-angry" id="bar-angry" style="width: 2%"></div></div>
-                    </div>
-                    <div class="stat-row">
-                        <span>Surprise</span>
-                        <div class="progress-bar"><div class="progress fill-surprise" id="bar-surprise" style="width: 3%"></div></div>
-                    </div>
-                    <div class="stat-row">
-                        <span>Neutral</span>
-                        <div class="progress-bar"><div class="progress fill-neutral" id="bar-neutral" style="width: 5%"></div></div>
-                    </div>
-                </div>
-            </section>
-        </main>
+        </div>
     </div>
 
     <script src="script.js"></script>

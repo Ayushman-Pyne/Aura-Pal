@@ -4,20 +4,58 @@
  */
 
 const currentEmotionText = document.getElementById('emotionText');
-const emotionIcon = document.getElementById('emotionIcon');
 const emotionConfidence = document.getElementById('emotionConfidence');
 const scannerLine = document.querySelector('.scanner-line');
 const videoStream = document.getElementById('videoStream');
 const videoPlaceholder = document.getElementById('videoPlaceholder');
+const bigFace = document.getElementById('bigFace');
+const emotionQuote = document.getElementById('emotionQuote');
 
-// FER2013 standard emotion targets
+// FER2013 standard emotion targets mapped to face classes
 const EMOTIONS = {
-    'Happy': { icon: 'fa-face-smile', color: '#10b981' },
-    'Sad': { icon: 'fa-face-frown', color: '#3b82f6' },
-    'Angry': { icon: 'fa-face-angry', color: '#ef4444' },
-    'Surprise': { icon: 'fa-face-surprise', color: '#f59e0b' },
-    'Neutral': { icon: 'fa-face-meh', color: '#64748b' }
+    'Happy': { 
+        class: 'face-happy', 
+        color: '#81c784',
+        quotes: ["Keep shining, the world needs your light.", "A smile is the prettiest thing you can wear.", "Your joy is contagious!"]
+    },
+    'Sad': { 
+        class: 'face-sad', 
+        color: '#64b5f6',
+        quotes: ["It's okay to not be okay.", "Tough times never last, but tough people do.", "Take a deep breath. You are stronger than you know."]
+    },
+    'Angry': { 
+        class: 'face-angry', 
+        color: '#e57373',
+        quotes: ["For every minute you are angry you lose sixty seconds of happiness.", "Let it go, it's not worth your peace.", "Breathe in peace, exhale stress."]
+    },
+    'Surprise': { 
+        class: 'face-surprise', 
+        color: '#ffb74d',
+        quotes: ["Expect the unexpected.", "Life is full of wonderful surprises.", "Stay curious, stay amazed."]
+    },
+    'Neutral': { 
+        class: 'face-neutral', 
+        color: '#9e9e9e',
+        quotes: ["Finding balance in the everyday.", "Stillness is where creativity is born.", "A calm mind brings inner strength."]
+    }
 };
+
+let currentEmotionState = '';
+
+// Add randomized blinking logic
+const eyeElements = document.querySelectorAll('.eye');
+function triggerBlink() {
+    eyeElements.forEach(eye => eye.classList.add('blink'));
+    setTimeout(() => {
+        eyeElements.forEach(eye => eye.classList.remove('blink'));
+    }, 200); // Duration matches CSS blink-anim
+
+    // Schedule next blink randomly between 2s and 6s
+    const nextBlink = Math.random() * 4000 + 2000;
+    setTimeout(triggerBlink, nextBlink);
+}
+// Start blink loop
+setTimeout(triggerBlink, 2000);
 
 /**
  * Update the dashboard with new emotion data
@@ -27,22 +65,32 @@ const EMOTIONS = {
 function updateEmotion(emotionName, confidences) {
     if (!EMOTIONS[emotionName]) return;
 
-    // Trigger popup micro-animation on icon change
-    emotionIcon.classList.remove('pop');
-    void emotionIcon.offsetWidth; // trigger DOM reflow
-    emotionIcon.classList.add('pop');
+    // Only update quote if the primary emotion actually changes
+    if (currentEmotionState !== emotionName) {
+        currentEmotionState = emotionName;
+        // Fade out
+        emotionQuote.style.opacity = 0;
+        
+        setTimeout(() => {
+            const quotes = EMOTIONS[emotionName].quotes;
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            emotionQuote.innerText = `"${randomQuote}"`;
+            // Fade in
+            emotionQuote.style.opacity = 1;
+        }, 300);
+    }
+
+    // Remove old face emotion classes
+    bigFace.className = 'reactive-face'; 
+    // Trigger reflow to restart any animations
+    void bigFace.offsetWidth;
+    // Add new emotion class
+    bigFace.classList.add(EMOTIONS[emotionName].class);
 
     // Update textual information
     currentEmotionText.innerText = emotionName;
     const mainConf = confidences[emotionName];
     emotionConfidence.innerText = mainConf ? mainConf.toFixed(1) : "0.0";
-    
-    // Update graphic icon and its glow color dynamically
-    const iconBase = emotionIcon.querySelector('i');
-    iconBase.className = `fa-regular ${EMOTIONS[emotionName].icon}`;
-    emotionIcon.style.color = EMOTIONS[emotionName].color;
-    // Keep outer glass glow but add the emotion color tint
-    emotionIcon.style.boxShadow = `inset 0 0 20px rgba(255,255,255,0.05), 0 0 20px ${EMOTIONS[emotionName].color}50`;
 
     // Update each progress bar in the stats section smoothly
     for (const [emo, val] of Object.entries(confidences)) {
